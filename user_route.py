@@ -134,4 +134,13 @@ def home(uid):
     return jsonify(data)
 
 
-
+@user_routes.route('/users',methods=['GET'])
+def users():
+    page = request.args.get("page",default=1, type=int)
+    per_page = request.args.get("per_page",default=5, type=int)
+    offset = (page-1) * per_page
+    cur.execute("select * from users limit %s offset %s",(per_page, offset))
+    data = cur.fetchall()
+    conn.commit()
+    return jsonify({ "data": data })
+    
