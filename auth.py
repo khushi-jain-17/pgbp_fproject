@@ -5,7 +5,7 @@ from datetime import datetime
 from datetime import datetime, timedelta
 from flask import request,jsonify, Blueprint 
 from flask_bcrypt import bcrypt 
-from conn_db import db_conn
+from conn_db import *
 from token_gen import * 
 from __init__ import app 
 from flask_bcrypt import Bcrypt
@@ -18,13 +18,15 @@ cur = conn.cursor()
 
 @auth_routes.route('/signup', methods=['POST'])
 def signup():
-    data = request.json
-    id = data.get("id")
-    # uid = data.get("uid")
-    uname = data.get("uname")
-    email = data.get("email")
-    password = data.get("password")
-    role_id = data.get("role_id")
+    try:
+        data = UserSchema().load(request.json)
+        id = data.get("id")
+        uname = data.get("uname")
+        email = data.get("email")
+        password = data.get("password")
+        role_id = data.get("role_id")
+    except ValidationError as e:
+        return jsonify({'error':e.messages}), 400    
     cur.execute('''select * FROM users where id=%s''', (id,))
     existing_user = cur.fetchone()
     if existing_user:

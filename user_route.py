@@ -5,7 +5,6 @@ from token_gen import *
 from role import * 
 import jwt 
 from datetime import datetime
-
 from flask import request,jsonify
 
 
@@ -13,7 +12,6 @@ user_routes = Blueprint("user_routes", __name__)
 
 conn = db_conn()
 cur = conn.cursor()
-
 
 
 @user_routes.route('/get_users', methods=['GET'])
